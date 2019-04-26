@@ -2,10 +2,7 @@ package br.com.frota.controller;
 
 import br.com.frota.config.BeanMapper;
 import br.com.frota.model.Viagem;
-import br.com.frota.model.dto.IdDTO;
-import br.com.frota.model.dto.OperacaoDTO;
-import br.com.frota.model.dto.ViagemDTO;
-import br.com.frota.model.dto.MessageDTO;
+import br.com.frota.model.dto.*;
 import br.com.frota.service.ViagemService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -85,11 +82,11 @@ public class ViagemController {
 
     /**
      * @param viagemDTO
-     * @return List<IdDTO>.
+     * @return ViagemDTO
      * @see ViagemDTO
      */
     @PostMapping("/")
-    public ResponseEntity<ViagemDTO> save(@RequestBody @Valid final ViagemDTO viagemDTO) {
+    public ResponseEntity<ViagemDTO> save(@RequestBody @Valid final ViagemCreateDTO viagemDTO) {
 
         logger.info("Saving "+ viagemDTO.toString());
 
@@ -101,7 +98,7 @@ public class ViagemController {
     /**
      * @param operacaoDTO
      * @return ViagemDTO
-     * @see IdDTO
+     * @see ViagemDTO
      */
     @PutMapping("/{id}")
     public ResponseEntity<ViagemDTO> update(@PathVariable("id") String id, @RequestBody @Valid final OperacaoDTO operacaoDTO) {

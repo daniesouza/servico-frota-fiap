@@ -6,7 +6,7 @@ mvn package spring-boot:run
 
 ### Endpoints documentation
 
-* [http://localhost/frota-service/swagger-ui.html](http://localhost:8080/frota-service/swagger-ui.html)
+* [http://localhost:8080/frota-service/swagger-ui.html](http://localhost:8080/frota-service/swagger-ui.html)
 
 ### Tests
 
