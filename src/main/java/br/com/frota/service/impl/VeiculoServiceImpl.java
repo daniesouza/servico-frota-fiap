@@ -21,8 +21,8 @@ public class VeiculoServiceImpl implements VeiculoService {
     public Veiculo findVeiculoDisponivel(){
 
         List<Veiculo> veiculos = listAll();
-
-        return veiculos.stream().filter(v -> v.getStatus().equals("AVAILABLE")).findFirst().orElse(null);
+        //TODO TROCAR PARA AVALIABLE
+        return veiculos.stream().filter(v -> v.getStatus().equals("TRAVELLING")).findFirst().orElse(null);
     }
 
     @Override
