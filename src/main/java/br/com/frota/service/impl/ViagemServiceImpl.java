@@ -4,6 +4,7 @@ import br.com.frota.dao.ViagemRepository;
 import br.com.frota.exception.handler.ServiceValidationException;
 import br.com.frota.model.Veiculo;
 import br.com.frota.model.Viagem;
+import br.com.frota.service.VeiculoService;
 import br.com.frota.service.ViagemService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -11,6 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +31,9 @@ public class ViagemServiceImpl implements ViagemService {
     @Autowired
     private ViagemRepository viagemRepository;
 
+    @Autowired
+    private VeiculoService veiculoService;
+
 
     /**
      *
@@ -43,21 +49,35 @@ public class ViagemServiceImpl implements ViagemService {
         Viagem viagemDb = findByCliente(viagem.getCliente());
 
         if(viagemDb != null){
-            ServiceValidationException sve = getAlreadyExistException();
-            throw sve;
+            throw getAlreadyExistException();
+        }
+
+        Veiculo veiculo = veiculoService.findVeiculoDisponivel();
+
+        if(veiculo == null){
+            throw new ServiceValidationException("Veiculo Indisponivel.",
+                    "veiculo_indisponivel",
+                    "veiculo");
         }
 
         viagem.setId(UUID.randomUUID().toString());
+        viagem.setVeiculo(veiculo);
+        viagem.getVeiculo().setStatus("TRAVELING");
+        viagem.setStatus("Veiculo a caminho");
+        viagem.setValor(new BigDecimal(Math.random()*100).setScale(2, BigDecimal.ROUND_HALF_UP));
+        viagem.setChegada((long) (Math.random()*100));
 
         /*
          * if throw DuplicateKeyException that means a concurrency issue to be treated.
          */
         try{
-            return viagemRepository.insert(viagem);
+            Viagem viagemAdd = viagemRepository.insert(viagem);
+            veiculoService.atualizarStatusVeiculo(veiculo);
+
+            return viagemAdd;
         }catch (DuplicateKeyException ex ){
             logger.error(ex);
-            ServiceValidationException sve = getAlreadyExistException();
-            throw sve;
+            throw getAlreadyExistException();
         }
     }
 
@@ -72,28 +92,23 @@ public class ViagemServiceImpl implements ViagemService {
     @Override
     public Viagem update(Viagem viagem) {
 
-        Viagem viagemDb = viagemRepository.findByCliente(viagem.getCliente());
-
-        if(viagemDb != null && !viagemDb.getId().equals(viagem.getId())){
-            ServiceValidationException sve = getAlreadyExistException();
-            throw sve;
-        }
-
-        /*
-         * if throw DuplicateKeyException that means a concurrency issue to be treated.
-         */
         try{
+
+            if("FINALIZAR".equals(viagem.getStatus())){
+                viagem.getVeiculo().setStatus("AVAILABLE");
+                veiculoService.atualizarStatusVeiculo(viagem.getVeiculo());
+            }
+
             return viagemRepository.save(viagem);
         }catch (DuplicateKeyException ex ){
             logger.error(ex);
-            ServiceValidationException sve = getAlreadyExistException();
-            throw sve;
+            throw getAlreadyExistException();
         }
     }
 
     private ServiceValidationException getAlreadyExistException(){
-        return new ServiceValidationException("Viagem already existis.",
-                "viagem_exist",
+        return new ServiceValidationException("Viagem ja existe.",
+                "viagem_existe",
                 "viagem");
     }
 
@@ -128,6 +143,13 @@ public class ViagemServiceImpl implements ViagemService {
      */
     @Override
     public void deleteById(String id){
+
+        Viagem viagem = find(id);
+
+        viagem.getVeiculo().setStatus("AVAILABLE");
+        veiculoService.atualizarStatusVeiculo(viagem.getVeiculo());
+
         viagemRepository.deleteById(id);
     }
+
 }

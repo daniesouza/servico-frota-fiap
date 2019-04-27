@@ -45,10 +45,7 @@ public class CustomRestExceptionHandler {
 
     @ExceptionHandler(ServiceValidationException.class)
     public ResponseEntity<ValidationErrors> excecoesNegocio(ServiceValidationException ex) {
-        /*
-            could return a HttpStatus.UNPROCESSABLE_ENTITY for business errors
-         */
-        return new ResponseEntity<>(ex.getErrors(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(ex.getErrors(), HttpStatus.UNPROCESSABLE_ENTITY);
     }
 
 }

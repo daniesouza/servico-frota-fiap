@@ -134,7 +134,7 @@ public class ViagemController {
         }
 
         viagemService.deleteById(id);
-        return new ResponseEntity<>(new MessageDTO("Viagem has been deleted!"), HttpStatus.OK);
+        return new ResponseEntity<>(new MessageDTO("Viagem deletada"), HttpStatus.OK);
     }
 
 
