@@ -22,7 +22,7 @@ public class VeiculoServiceImpl implements VeiculoService {
 
         List<Veiculo> veiculos = listAll();
         //TODO TROCAR PARA AVALIABLE
-        return veiculos.stream().filter(v -> v.getStatus().equals("TRAVELLING")).findFirst().orElse(null);
+        return veiculos.stream().filter(v -> v.getStatus().equals("Livre")).findFirst().orElse(null);
     }
 
     @Override

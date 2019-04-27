@@ -2,6 +2,7 @@ package br.com.frota.dao.impl;
 
 import br.com.frota.config.BeanMapper;
 import br.com.frota.dao.VeiculoRepository;
+import br.com.frota.model.Status;
 import br.com.frota.model.Veiculo;
 import org.springframework.http.HttpEntity;
 import org.springframework.stereotype.Repository;
@@ -41,13 +42,9 @@ public class VeiculoRepositoryImpl implements VeiculoRepository {
 
         RestTemplate restTemplate = new RestTemplate();
 
-        String status = "{\n" +
-                "  \"status\": \""+veiculo.getStatus()+"\"\n" +
-                "}";
-
-        HttpEntity<String> request = new HttpEntity<>(status);
+        HttpEntity<Status> request = new HttpEntity<>(new Status(veiculo.getStatus()));
 
 
-        restTemplate.put(API_URL+"/status/"+veiculo.getId(),request);
+        restTemplate.put(API_URL+"status/"+veiculo.getId(),request);
     }
 }

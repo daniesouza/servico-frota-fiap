@@ -62,7 +62,7 @@ public class ViagemServiceImpl implements ViagemService {
 
         viagem.setId(UUID.randomUUID().toString());
         viagem.setVeiculo(veiculo);
-        viagem.getVeiculo().setStatus("TRAVELLING");
+        viagem.getVeiculo().setStatus("Em trânsito");
         viagem.setStatus("Veiculo a caminho");
         viagem.setValor(new BigDecimal(Math.random()*100).setScale(2, BigDecimal.ROUND_HALF_UP));
         viagem.setChegada((long) (Math.random()*100));
@@ -95,7 +95,7 @@ public class ViagemServiceImpl implements ViagemService {
         try{
 
             if("FINALIZAR".equals(viagem.getStatus())){
-                viagem.getVeiculo().setStatus("AVAILABLE");
+                viagem.getVeiculo().setStatus("Livre");
                 viagem.setCliente(viagem.getCliente()+" Finalizado "+System.currentTimeMillis());
                 veiculoService.atualizarStatusVeiculo(viagem.getVeiculo());
             }
@@ -147,7 +147,7 @@ public class ViagemServiceImpl implements ViagemService {
 
         Viagem viagem = find(id);
 
-        viagem.getVeiculo().setStatus("AVAILABLE");
+        viagem.getVeiculo().setStatus("Livre");
         veiculoService.atualizarStatusVeiculo(viagem.getVeiculo());
 
         viagemRepository.deleteById(id);
