@@ -13,10 +13,6 @@ mvn package spring-boot:run
 * Run with junit to test some demo testcases.
 
 
-### Class Diagram
-
-![Classes](docs/diagramas/class_diagram.png)
-
 ### MongoDB Embebbed Config.
 * Database: test
 * Collections: viagem
